@@ -47,13 +47,18 @@ uvicorn app.main:app --reload --port 8000
 - `GET /health` — 헬스체크
 - `GET /categories` — 카테고리 목록 (id, label, description)
 - `POST /chat` — 질문 → RAG 검색 → Claude 답변
+- `GET /sources/{parent_id}` — 특정 근거 자료의 전체 원문 조회 ("원문 보기"용, `/chat`의 `sources`는 200자로 잘려있음)
+- `GET /document/info` — 원본 PDF 파일명/최종수정일/다운로드 URL
+- `GET /document/download` — 원본 PDF 파일 다운로드
+- `POST /feedback` — 답변에 대한 좋아요/싫어요 기록 (`storage/feedback.jsonl`에 누적 저장)
 
 ```json
 // POST /chat 요청
 {
   "message": "アルバイトはしてもいいですか？",
   "category": null,        // optional, 카테고리 id로 필터링
-  "session_id": null        // optional, 아직 미사용 (대화 히스토리용으로 예약)
+  "session_id": null,       // optional, 아직 미사용 (대화 히스토리용으로 예약)
+  "language": "ja"          // optional, "ko" | "ja". 생략하면 질문 언어에 자동으로 맞춤
 }
 ```
 
@@ -63,12 +68,20 @@ uvicorn app.main:app --reload --port 8000
   "answer": "...",
   "category_used": null,
   "sources": [
-    {"parent_id": "...", "category": "school_life_rules", "heading": "...", "text_snippet": "..."}
+    {
+      "parent_id": "...", "category": "school_life_rules", "heading": "...",
+      "text_snippet": "...", "page_start": 4, "page_end": 7
+    }
   ]
 }
 ```
 
-답변 언어는 질문 언어를 따라갑니다 (일본어로 물으면 일본어로, 한국어로 물으면 한국어로).
+`sources`의 첫 번째 항목을 주 근거("답변 근거"), 나머지를 관련 조항으로 프론트에서 표시하면 됩니다. 언어를 명시하지 않으면 질문 언어에 자동으로 맞춰 답변합니다.
+
+```json
+// POST /feedback 요청
+{"parent_id": "...", "question": "...", "answer": "...", "helpful": true}
+```
 
 ## 프로젝트 구조
 

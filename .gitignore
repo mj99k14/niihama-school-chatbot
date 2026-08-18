@@ -5,4 +5,5 @@ backend/**/__pycache__/
 backend/.env
 backend/storage/chroma_db/
 backend/storage/docstore/
+backend/storage/feedback.jsonl
 *.pyc
