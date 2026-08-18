@@ -1,0 +1,114 @@
+{
+  "info": {
+    "name": "니이하마 챗봇 API",
+    "description": "니이하마 공업고등전문학교 학생편람 RAG 챗봇 백엔드 API 테스트용 컬렉션",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
+    { "key": "parent_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+      }
+    },
+    {
+      "name": "카테고리 목록",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/categories", "host": ["{{baseUrl}}"], "path": ["categories"] }
+      }
+    },
+    {
+      "name": "질문하기 (일본어, 언어 자동감지)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const data = pm.response.json();",
+              "  if (data.sources && data.sources.length > 0) {",
+              "    pm.collectionVariables.set('parent_id', data.sources[0].parent_id);",
+              "  }",
+              "}",
+              "pm.test('status is 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": \"アルバイトはしてもいいですか？\",\n  \"category\": null,\n  \"session_id\": null,\n  \"language\": null\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/chat", "host": ["{{baseUrl}}"], "path": ["chat"] }
+      }
+    },
+    {
+      "name": "질문하기 (한국어 강제 응답 + 카테고리 필터)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": \"도서관 대출 기간이 어떻게 되나요?\",\n  \"category\": \"library\",\n  \"session_id\": null,\n  \"language\": \"ko\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/chat", "host": ["{{baseUrl}}"], "path": ["chat"] }
+      }
+    },
+    {
+      "name": "근거 원문 조회",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sources/{{parent_id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["sources", "{{parent_id}}"]
+        }
+      },
+      "description": "위 '질문하기' 요청을 먼저 실행하면 parent_id 변수가 자동으로 채워집니다."
+    },
+    {
+      "name": "문서 정보",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/document/info", "host": ["{{baseUrl}}"], "path": ["document", "info"] }
+      }
+    },
+    {
+      "name": "문서 다운로드",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/document/download", "host": ["{{baseUrl}}"], "path": ["document", "download"] }
+      }
+    },
+    {
+      "name": "피드백 제출 (도움됨)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"parent_id\": \"{{parent_id}}\",\n  \"question\": \"アルバイトはしてもいいですか？\",\n  \"answer\": \"(테스트용 답변)\",\n  \"helpful\": true\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+      }
+    }
+  ]
+}

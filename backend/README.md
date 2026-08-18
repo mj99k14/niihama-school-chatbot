@@ -83,6 +83,12 @@ uvicorn app.main:app --reload --port 8000
 {"parent_id": "...", "question": "...", "answer": "...", "helpful": true}
 ```
 
+## Postman으로 테스트
+
+`postman/niihama-chatbot.postman_collection.json`을 Postman에 Import하면 위 7개 엔드포인트를 바로 호출해볼 수 있습니다. "질문하기" 요청을 먼저 실행하면 응답의 `parent_id`가 컬렉션 변수에 자동 저장되어 "근거 원문 조회" 요청에 이어서 쓸 수 있습니다.
+
+Postman **웹 버전**(`*.postman.co`)을 쓰는 경우, 브라우저는 `localhost`에 직접 접속할 수 없으므로 **Postman Desktop Agent**를 설치해야 요청이 정상적으로 나갑니다.
+
 ## 프로젝트 구조
 
 ```
@@ -90,7 +96,7 @@ backend/
 ├── app/
 │   ├── main.py                   # FastAPI 앱 진입점
 │   ├── config.py                 # 환경변수 설정
-│   ├── api/                      # 라우터 (chat, categories)
+│   ├── api/                      # 라우터 (chat, categories, sources, document, feedback)
 │   ├── core/
 │   │   ├── pdf_loader.py         # PDF -> 폰트 기반 heading 섹션 추출
 │   │   ├── chunking.py           # Parent-Child 청킹
@@ -107,6 +113,7 @@ backend/
 │   ├── chroma_db/                # 벡터 인덱스 (ingest 시 생성, git 미포함)
 │   └── docstore/                 # Parent 원문 JSON (ingest 시 생성, git 미포함)
 ├── scripts/ingest.py              # 전체 재인덱싱 스크립트
+├── postman/                        # Postman 테스트용 컬렉션
 └── requirements.txt               # pip freeze로 고정된 전체 의존성
 ```
 

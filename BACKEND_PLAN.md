@@ -1,3 +1,4 @@
+
 # 니이하마 학생편람 RAG 챗봇 — 백엔드 개발 계획
 
 ## 0. 개요
@@ -17,9 +18,8 @@
 | 임베딩 모델 | `intfloat/multilingual-e5-large` (HuggingFace, 로컬 실행) | Anthropic은 임베딩 API를 제공하지 않음. 학생편람이 일본어 문서이므로 다국어 지원 임베딩이 필요하고, 로컬 실행이라 별도 API 키/비용 없이 사용 가능 |
 | Parent-Child 청킹 | LangChain `ParentDocumentRetriever` 패턴 | 요청사항 — child는 벡터 검색용 소단위, parent는 LLM에 전달할 문맥 단위 |
 
-### ⚠️ Python 버전 이슈
-현재 환경이 **Python 3.14.3**으로 확인됨. 최신 버전이라 `chromadb`, `sentence-transformers`, `torch` 등 주요 라이브러리가 아직 사전 빌드 wheel을 제공하지 않을 가능성이 높음 → 설치 실패 위험.
-**→ 백엔드 전용 가상환경을 Python 3.11 또는 3.12로 구성하는 것을 권장.** (실제 구현 단계 진입 전 설치 가능 여부 먼저 점검)
+### ✅ Python 버전 이슈 (해결됨)
+Python 3.14.3 환경에서 `pip install --dry-run`으로 확인한 결과 `chromadb`, `sentence-transformers`, `torch` 전부 `cp314` wheel이 이미 제공되어 설치 문제 없음. 버전을 낮추지 않고 3.14 그대로 진행함.
 
 ## 2. 프로젝트 폴더 구조 (제안)
 
@@ -56,19 +56,23 @@ niihama_chatbot/
 │   └── README.md
 ```
 
-## 3. 카테고리 정의 (7개, 메타데이터 태깅용)
+## 3. 카테고리 정의 (9개, 메타데이터 태깅용)
 
-| # | 카테고리 | 주요 키워드(예시) |
-|---|---|---|
-| 1 | 학교생활 규정 | 복장, 통학, 아르바이트, 흡연, 음주 |
-| 2 | 증명서·학생증 | 학생증, IC카드, 학할, 통학정기권 |
-| 3 | 보건·상담 | 보건실, 학생상담실, 상해보험 |
-| 4 | 시설·동아리 활동 | 시설 이용, 학생회, 동아리 |
-| 5 | 장학금·학비지원 | 취학지원금, 수학지원 신제도, 장학금 |
-| 6 | 도서관 이용 | 대출, 반납, 개관시간, 전자자료 |
-| 7 | 학사·납부 규정 | 학칙, 학생준칙, 제납금 |
+> 최초 설계는 7개였으나, 프론트엔드 디자인(사이드바)에 맞춰 "시설·동아리 활동"을 시설/동아리로, "학사·납부 규정"을 학사/납부로 각각 분리해 9개로 확정함.
 
-태깅 방식: **Parent chunk(섹션 단위) 기준으로 키워드 매칭 → 카테고리 부여**, 이후 child chunk는 소속된 parent의 카테고리를 그대로 상속. 애매한 경우를 대비해 규칙 기반 매칭 결과를 사람이 검수/보정할 수 있도록 매핑 테이블을 코드에서 분리 관리.
+| # | id | 카테고리 | description |
+|---|---|---|---|
+| 1 | `school_life_rules` | 학교생활 규정 안내 | 학생심득 / 학생생활 |
+| 2 | `id_certificate` | 증명서·학생증 발급 | 학생생활 (학생증·IC카드·운임할인) |
+| 3 | `health_counseling` | 보건·상담 지원 | 보건관리센터 |
+| 4 | `facilities` | 시설 이용 안내 | 시설의 사용 |
+| 5 | `clubs` | 학생회·동아리 활동 | 학생회·과외활동 / 학생회 관계규칙 |
+| 6 | `scholarship_aid` | 장학금·학비지원 제도 | 고등학교 등 취학지원금 / 고등교육 수학지원 신제도 / 장학금 |
+| 7 | `library` | 도서관 이용 안내 | 도서관 이용심득 |
+| 8 | `academic_procedures` | 학사 절차 안내 | 학칙 / 학생준칙 |
+| 9 | `payment` | 납부금 안내 | 제납금 일람 |
+
+태깅 방식: **Parent chunk(섹션 단위) 기준으로 키워드 매칭 → 카테고리 부여**, 이후 child chunk는 소속된 parent의 카테고리를 그대로 상속. 우연한 키워드 겹침으로 오분류되는 경우를 대비해 `app/core/categories.py`에 `MANUAL_OVERRIDES`(heading 기반 수동 예외)를 키워드 매칭보다 먼저 적용하도록 구성함.
 
 ## 4. Parent-Child 청킹 설계
 
@@ -104,13 +108,19 @@ niihama_chatbot/
 ### `GET /categories`
 ```json
 [
-  {"id": "school_life_rules", "label": "학교생활 규정"},
-  {"id": "id_certificate", "label": "증명서·학생증"},
+  {"id": "school_life_rules", "label": "학교생활 규정 안내", "description": "학생심득 / 학생생활"},
+  {"id": "id_certificate", "label": "증명서·학생증 발급", "description": "학생생활 (학생증·IC카드·운임할인)"},
   ...
 ]
 ```
 
-### `GET /health` (헬스체크용, 부가)
+### 그 외 구현된 엔드포인트 (진행하면서 추가됨)
+- `GET /health` — 헬스체크
+- `GET /sources/{parent_id}` — 특정 근거의 전체 원문 조회 ("원문 보기"용)
+- `GET /document/info`, `GET /document/download` — 원본 PDF 메타정보/다운로드
+- `POST /feedback` — 답변 좋아요/싫어요 기록
+
+상세 요청/응답 스키마는 [`backend/README.md`](backend/README.md)와 프론트엔드 전달용 API 문서 참고.
 
 ## 6. RAG 검색 → Claude 호출 흐름
 
@@ -123,16 +133,22 @@ niihama_chatbot/
 
 ## 7. 작업 순서 (진행 체크리스트)
 
-- [ ] 0. 가상환경 구성 (Python 3.11/3.12) + 라이브러리 설치 가능 여부 확인
-- [ ] 1. 프로젝트 폴더 구조 생성
-- [ ] 2. PDF 로더 + 텍스트 추출 (`니이하마.pdf` 기준)
-- [ ] 3. Parent-Child 청킹 구현
-- [ ] 4. 임베딩 생성 + Chroma 저장
-- [ ] 5. 카테고리 메타데이터 태깅
-- [ ] 6. FastAPI 엔드포인트 구현
-- [ ] 7. RAG 검색 → Claude 호출 로직 연결 + 통합 테스트
+- [x] 0. 가상환경 구성 (Python 3.14 그대로 사용) + 라이브러리 설치 확인
+- [x] 1. 프로젝트 폴더 구조 생성
+- [x] 2. PDF 로더 + 텍스트 추출 (`니이하마.pdf` 기준, 폰트 크기 기반 heading 감지)
+- [x] 3. Parent-Child 청킹 구현 (섹션 64개 → child 175개)
+- [x] 4. 임베딩 생성 + Chroma 저장 (`multilingual-e5-large`)
+- [x] 5. 카테고리 메타데이터 태깅 (9개, 수동 예외로 오분류 보정)
+- [x] 6. FastAPI 엔드포인트 구현 (7개 전부)
+- [x] 7. RAG 검색 → Claude 호출 로직 연결 + 통합 테스트 (Postman 컬렉션 포함)
 
-## 8. 확인 필요 사항
-- [ ] `니이하마.pdf`가 실제 학생편람 문서가 맞는지 확인 (일본어 원문 예상)
-- [ ] Anthropic API 키 발급 및 `.env` 등록 필요
-- [ ] Python 버전을 3.11/3.12로 낮출지, 아니면 3.14에서 강행해볼지 결정
+## 8. 확인 필요 사항 (전부 해결됨)
+- [x] `니이하마.pdf`가 실제 학생편람 문서 맞음 (일본어 원문)
+- [x] Anthropic API 키 발급 및 `backend/.env` 등록 완료
+- [x] Python 버전은 3.14 그대로 사용하기로 결정 (3.11/3.12로 낮출 필요 없음)
+
+## 9. 남은 작업 (프론트 연동 이후)
+- [ ] 프론트엔드 도메인 확정 후 CORS `allow_origins` 제한
+- [ ] `session_id` 기반 대화 히스토리 지원 여부 결정
+- [ ] `tests/`에 pytest 테스트 추가
+- [ ] main 브랜치와의 병합 시점/방식 결정
