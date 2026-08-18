@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f8f2ff;
+  --color-primary: #9867d8;
+  --color-primary-dark: #7c4fc0;
+  --color-primary-light: #e9d9f8;
+  --color-accent-blue: #dceeff;
+  --color-accent-blue-dark: #bfe0ff;
+  --color-bubble-user: #ecdffb;
+  --color-ink: #222222;
+  --color-subink: #666666;
+  --color-line: #e7ddf1;
+  --color-success: #32c778;
+
+  --font-sans: "Noto Sans JP", "Noto Sans KR", "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", "Malgun Gothic", ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce-dot {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out both;
+}
+
+.animate-slide-up {
+  animation: slide-up-fade 0.35s ease-out both;
+}
+
+.animate-modal-in {
+  animation: modal-in 0.22s ease-out both;
+}
+
+.animate-overlay-in {
+  animation: overlay-in 0.2s ease-out both;
+}
+
+.typing-dot {
+  animation: bounce-dot 1.1s infinite ease-in-out;
+}
+
+.status-dot {
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+.wrap-text {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+html:lang(ko) .wrap-text {
+  word-break: keep-all;
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-light) transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: var(--color-primary-light);
+  border-radius: 9999px;
+}
