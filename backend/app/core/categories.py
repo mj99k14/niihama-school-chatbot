@@ -9,35 +9,62 @@ from app.core.chunking import ParentChunk
 
 CATEGORIES: dict[str, dict[str, object]] = {
     "school_life_rules": {
-        "label": "학교생활 규정",
+        "label": "학교생활 규정 안내",
+        "description": "학생심득 / 학생생활",
         "keywords": [
             "服装", "身だしなみ", "制服", "通学", "自転車", "アルバイト",
             "喫煙", "飲酒", "車両", "送迎", "登山", "海外渡航", "挨拶", "心得", "自動車", "免許",
         ],
     },
     "id_certificate": {
-        "label": "증명서·학생증",
+        "label": "증명서·학생증 발급",
+        "description": "학생생활 (학생증·IC카드·운임할인)",
         "keywords": ["学生証", "ＩＣカード", "ICカード", "学生旅客運賃割引証", "学割", "通学証明書", "通学定期"],
     },
     "health_counseling": {
-        "label": "보건·상담",
-        "keywords": ["保健室", "学生相談室", "相談", "傷害保険", "健康", "カウンセ"],
+        "label": "보건·상담 지원",
+        "description": "보건관리센터",
+        "keywords": ["保健室", "学生相談室", "相談", "傷害保険", "健康", "カウンセ", "特別支援教育", "メンタルヘルス"],
     },
-    "facilities_clubs": {
-        "label": "시설·동아리 활동",
-        "keywords": ["施設", "学生会", "部活動", "クラブ", "同好会", "課外活動"],
+    "facilities": {
+        "label": "시설 이용 안내",
+        "description": "시설의 사용",
+        "keywords": [
+            "尚友会館", "教室", "実験室", "クラブハウス", "更衣室", "鍵の管理", "忘れ物",
+            "施設・設備使用許可", "時間外使用", "学生食堂", "売店", "合宿研修所",
+        ],
+    },
+    "clubs": {
+        "label": "학생회·동아리 활동",
+        "description": "학생회·과외활동 / 학생회 관계규칙",
+        "keywords": [
+            "学生会", "部活動", "クラブ", "同好会", "課外活動", "学生大会", "中央委員会",
+            "学級会", "選挙管理委員会", "代議員会", "監査委員会", "会計局", "文化局", "体育局",
+            "学生会準則", "解職要求", "専門委員会",
+        ],
     },
     "scholarship_aid": {
-        "label": "장학금·학비지원",
-        "keywords": ["就学支援金", "修学支援", "奨学金", "授業料"],
+        "label": "장학금·학비지원 제도",
+        "description": "고등학교 등 취학지원금 / 고등교육 수학지원 신제도 / 장학금",
+        "keywords": ["就学支援金", "修学支援", "奨学金"],
     },
     "library": {
-        "label": "도서관 이용",
-        "keywords": ["図書館", "貸出", "返却", "開館", "電子資料"],
+        "label": "도서관 이용 안내",
+        "description": "도서관 이용심득",
+        "keywords": ["図書館", "貸出", "返却", "開館", "電子資料", "利用資格", "蔵書"],
     },
-    "academic_payment": {
-        "label": "학사·납부 규정",
-        "keywords": ["学則", "学生準則", "諸納金", "単位", "卒業", "退学", "休学"],
+    "academic_procedures": {
+        "label": "학사 절차 안내",
+        "description": "학칙 / 학생준칙",
+        "keywords": [
+            "学則", "学生準則", "入学", "転科", "転学", "留学", "卒業", "単位", "専攻科",
+            "学年", "学期", "研究生", "聴講生", "外国人留学生", "自己評価",
+        ],
+    },
+    "payment": {
+        "label": "납부금 안내",
+        "description": "제납금 일람",
+        "keywords": ["諸納金", "検定料", "入学料", "授業料", "寄宿料", "納期", "納入", "除籍"],
     },
 }
 
@@ -69,4 +96,7 @@ def tag_categories(parents: list[ParentChunk]) -> list[str]:
 
 
 def list_categories() -> list[dict[str, str]]:
-    return [{"id": cat_id, "label": info["label"]} for cat_id, info in CATEGORIES.items()]
+    return [
+        {"id": cat_id, "label": info["label"], "description": info["description"]}
+        for cat_id, info in CATEGORIES.items()
+    ]

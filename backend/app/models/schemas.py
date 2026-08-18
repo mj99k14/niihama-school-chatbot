@@ -23,3 +23,4 @@ class ChatResponse(BaseModel):
 class CategoryItem(BaseModel):
     id: str
     label: str
+    description: str
