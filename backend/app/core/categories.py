@@ -70,6 +70,17 @@ CATEGORIES: dict[str, dict[str, object]] = {
 
 DEFAULT_CATEGORY = "school_life_rules"
 
+# 키워드 점수만으로는 우연한 단어 겹침(예: 도난방지 안내문에 "교실"·"更衣室"이 언급되어
+# "시설 이용"으로 잘못 분류되는 경우) 때문에 오분류가 나는 항목들을 검수 후 직접 지정한다.
+# heading 앞부분이 key와 일치하면 키워드 점수와 무관하게 이 category로 확정한다.
+MANUAL_OVERRIDES: dict[str, str] = {
+    "学生の自主的な取り組みを支援する": "school_life_rules",
+    "１ 成績通知": "school_life_rules",
+    "第８章 集会": "school_life_rules",
+    "第10章 掲示": "school_life_rules",
+    "第1 0章 掲示": "school_life_rules",
+}
+
 
 def classify(text: str) -> tuple[str, int]:
     best_id = DEFAULT_CATEGORY
@@ -83,11 +94,19 @@ def classify(text: str) -> tuple[str, int]:
 
 
 def tag_categories(parents: list[ParentChunk]) -> list[str]:
-    """각 parent.metadata에 category를 채우고, 키워드 매칭이 0건이라 기본값으로
-    떨어진 heading 목록을 반환한다 (검수용)."""
+    """각 parent.metadata에 category를 채우고, 수동 예외에도 없고 키워드 매칭도
+    0건이라 기본값으로 떨어진 heading 목록을 반환한다 (검수용)."""
     unmatched: list[str] = []
     for parent in parents:
-        category_id, score = classify(f"{parent.heading}\n{parent.text}")
+        override_id = next(
+            (cat_id for prefix, cat_id in MANUAL_OVERRIDES.items() if parent.heading.startswith(prefix)),
+            None,
+        )
+        if override_id:
+            category_id, score = override_id, 1
+        else:
+            category_id, score = classify(f"{parent.heading}\n{parent.text}")
+
         parent.metadata["category"] = category_id
         parent.metadata["category_label"] = CATEGORIES[category_id]["label"]
         if score == 0:
