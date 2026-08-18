@@ -48,6 +48,9 @@ class ParentStore:
     def all_categories(self) -> list[str]:
         return sorted({p["category"] for p in self._data.values() if p.get("category")})
 
+    def items(self) -> list[tuple[str, dict]]:
+        return list(self._data.items())
+
 
 def get_vectorstore(embeddings=None) -> Chroma:
     return Chroma(
