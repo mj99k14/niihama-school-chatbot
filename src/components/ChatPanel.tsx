@@ -11,6 +11,7 @@ interface ChatPanelProps {
   isSending: boolean;
   activeMessageId: string | null;
   healthStatus: HealthStatus;
+  suggestedQuestions: string[];
   onSend: (message: string) => void;
   onClear: () => void;
   onSelectMessage: (id: string) => void;
@@ -23,6 +24,7 @@ export default function ChatPanel({
   isSending,
   activeMessageId,
   healthStatus,
+  suggestedQuestions,
   onSend,
   onClear,
   onSelectMessage,
@@ -57,7 +59,11 @@ export default function ChatPanel({
         <div ref={bottomRef} />
       </div>
 
-      <SuggestedQuestions onSelect={onSend} disabled={isSending} />
+      <SuggestedQuestions
+        questions={suggestedQuestions}
+        onSelect={onSend}
+        disabled={isSending}
+      />
       <ChatInput onSend={onSend} disabled={isSending} />
     </section>
   );

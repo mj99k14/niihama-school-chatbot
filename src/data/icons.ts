@@ -8,8 +8,6 @@ import {
   BookOpen,
   FileClock,
   CircleDollarSign,
-  UserRound,
-  Building,
   LayoutGrid,
   FileQuestion,
 } from "lucide-react";
@@ -29,10 +27,3 @@ export const categoryIcons: Record<string, LucideIcon> = {
 
 export const categoryFallbackIcon: LucideIcon = FileQuestion;
 export const allCategoriesIcon: LucideIcon = LayoutGrid;
-
-export const consultationIcons: Record<number, LucideIcon> = {
-  1: GraduationCap,
-  2: HeartPulse,
-  3: UserRound,
-  4: Building,
-};

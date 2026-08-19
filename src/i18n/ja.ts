@@ -7,9 +7,6 @@ export const ja: Dictionary = {
     serviceName: "AIチャット相談",
     newChatLabel: "新しい会話",
     clearLabel: "会話を削除",
-    historyLabel: "会話履歴",
-    historyModalTitle: "会話履歴",
-    historyEmpty: "まだ質問した履歴がありません。",
     languageAria: "言語を選択",
     onlineLabel: "オンライン",
     offlineLabel: "サーバー接続エラー",
@@ -41,12 +38,6 @@ export const ja: Dictionary = {
     retryLabel: "再試行",
     sendFailedLabel: "回答を取得できませんでした。",
   },
-  suggestedQuestions: [
-    "遅刻したらどうなりますか？",
-    "服装に関する規則はありますか？",
-    "学生証はどのように発行しますか？",
-    "施設はいつ利用できますか？",
-  ],
   sourcePanel: {
     heading: "校則リファレンス",
     intro: "AIの回答に使われた学生便覧の根拠を確認できます。",
@@ -64,34 +55,6 @@ export const ja: Dictionary = {
     downloadLabel: "ダウンロード",
     documentLoadError: "文書情報を読み込めませんでした。",
   },
-  consultation: {
-    cardTitle: "困ったときの相談窓口",
-    cardBodyLines: ["AIで解決しない場合は、", "先生や相談窓口に相談してください。"],
-    buttonLabel: "相談窓口一覧を見る",
-    modalTitle: "相談窓口一覧",
-  },
-  consultations: [
-    {
-      id: 1,
-      name: "学生相談室",
-      description: "学校生活や心の悩みについて、専門のカウンセラーに相談できます。",
-    },
-    {
-      id: 2,
-      name: "保健管理センター",
-      description: "身体の健康や体調不良について相談・受診ができます。",
-    },
-    {
-      id: 3,
-      name: "担任教員",
-      description: "学校生活全般について、まずは担任の先生に相談しましょう。",
-    },
-    {
-      id: 4,
-      name: "学生課",
-      description: "学籍・証明書・奨学金など制度面の手続きについて対応します。",
-    },
-  ],
   footer: [
     "※ このAIチャットボットの回答は、学生便覧に基づく一般的な情報を提供するものです。",
     "正式な判断が必要な場合は、学校教職員に確認してください。",

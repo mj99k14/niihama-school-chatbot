@@ -7,9 +7,6 @@ export const ko: Dictionary = {
     serviceName: "AI 챗봇 상담",
     newChatLabel: "새 대화",
     clearLabel: "대화 삭제",
-    historyLabel: "대화 기록",
-    historyModalTitle: "대화 기록",
-    historyEmpty: "아직 질문한 기록이 없습니다.",
     languageAria: "언어 선택",
     onlineLabel: "온라인",
     offlineLabel: "서버 연결 오류",
@@ -41,12 +38,6 @@ export const ko: Dictionary = {
     retryLabel: "다시 시도",
     sendFailedLabel: "답변을 가져오지 못했습니다.",
   },
-  suggestedQuestions: [
-    "지각하면 어떻게 되나요?",
-    "복장 규정이 있나요?",
-    "학생증은 어떻게 발급받나요?",
-    "시설은 언제 이용할 수 있나요?",
-  ],
   sourcePanel: {
     heading: "교칙 레퍼런스",
     intro: "AI 답변에 사용된 학생편람 근거를 확인할 수 있습니다.",
@@ -64,34 +55,6 @@ export const ko: Dictionary = {
     downloadLabel: "다운로드",
     documentLoadError: "문서 정보를 불러오지 못했습니다.",
   },
-  consultation: {
-    cardTitle: "어려운 일이 있을 때 상담 창구",
-    cardBodyLines: ["AI로 해결되지 않는 경우에는,", "선생님이나 상담 창구에 상담해주세요."],
-    buttonLabel: "상담 창구 목록 보기",
-    modalTitle: "상담 창구 목록",
-  },
-  consultations: [
-    {
-      id: 1,
-      name: "학생상담실",
-      description: "학교생활이나 마음의 고민에 대해 전문 상담사에게 상담할 수 있습니다.",
-    },
-    {
-      id: 2,
-      name: "보건관리센터",
-      description: "신체 건강이나 몸이 안 좋을 때 상담・진료를 받을 수 있습니다.",
-    },
-    {
-      id: 3,
-      name: "담임교사",
-      description: "학교생활 전반에 대해 먼저 담임 선생님께 상담해보세요.",
-    },
-    {
-      id: 4,
-      name: "학생과",
-      description: "학적・증명서・장학금 등 제도 관련 절차를 담당합니다.",
-    },
-  ],
   footer: [
     "※ 이 AI 챗봇의 답변은 학생편람에 근거한 일반적인 정보를 제공하는 것입니다.",
     "정식 판단이 필요한 경우에는 학교 교직원에게 확인해주세요.",

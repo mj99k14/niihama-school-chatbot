@@ -1,4 +1,4 @@
-import { RotateCcw, History } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import Avatar from "./Avatar";
 import LanguageDropdown from "./LanguageDropdown";
 import { useLanguage } from "../i18n";
@@ -7,7 +7,6 @@ import type { HealthStatus } from "../hooks/useHealth";
 interface HeaderProps {
   healthStatus: HealthStatus;
   onNewChat: () => void;
-  onOpenHistory: () => void;
 }
 
 const STATUS_DOT_CLASS: Record<HealthStatus, string> = {
@@ -16,7 +15,7 @@ const STATUS_DOT_CLASS: Record<HealthStatus, string> = {
   checking: "bg-subink",
 };
 
-export default function Header({ healthStatus, onNewChat, onOpenHistory }: HeaderProps) {
+export default function Header({ healthStatus, onNewChat }: HeaderProps) {
   const { dictionary } = useLanguage();
   const statusLabel =
     healthStatus === "online"
@@ -63,15 +62,6 @@ export default function Header({ healthStatus, onNewChat, onOpenHistory }: Heade
           >
             <RotateCcw className="h-4 w-4" strokeWidth={2.2} />
             <span className="hidden sm:inline">{dictionary.header.newChatLabel}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenHistory}
-            className="flex items-center gap-1.5 rounded-full border border-line bg-white px-2.5 py-2 text-xs font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-primary-light hover:bg-primary-light hover:text-primary hover:shadow-sm focus-visible:outline-2 focus-visible:outline-primary md:px-3.5 md:text-sm"
-          >
-            <History className="h-4 w-4" strokeWidth={2.2} />
-            <span className="hidden sm:inline">{dictionary.header.historyLabel}</span>
           </button>
 
           <LanguageDropdown />

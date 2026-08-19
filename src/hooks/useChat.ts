@@ -5,28 +5,6 @@ import { ApiError, NetworkError } from "../api/client";
 import type { Dictionary, Lang } from "../i18n/types";
 import type { ChatMessageType } from "../types";
 
-const HISTORY_KEY = "chat-history";
-const HISTORY_LIMIT = 50;
-
-function loadHistory(): string[] {
-  try {
-    const raw = window.localStorage.getItem(HISTORY_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === "string") : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveHistory(history: string[]) {
-  try {
-    window.localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-HISTORY_LIMIT)));
-  } catch {
-    // localStorage unavailable (private mode, quota, etc.) - history just won't persist
-  }
-}
-
 function createId(): string {
   return typeof crypto !== "undefined" && "randomUUID" in crypto
     ? crypto.randomUUID()
@@ -59,7 +37,6 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
   ]);
   const [isSending, setIsSending] = useState(false);
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
-  const [questionHistory, setQuestionHistory] = useState<string[]>(() => loadHistory());
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -129,11 +106,6 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
 
     setMessages((prev) => [...prev, userMessage, pendingMessage]);
     setIsSending(true);
-    setQuestionHistory((prev) => {
-      const next = [...prev, trimmed];
-      saveHistory(next);
-      return next;
-    });
 
     void runChatRequest(pendingId, trimmed);
   };
@@ -198,7 +170,6 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
     submitFeedback,
     resetChat,
     clearChat,
-    questionHistory,
     activeMessage,
     selectMessage: setActiveMessageId,
   };

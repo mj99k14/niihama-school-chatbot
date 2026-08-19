@@ -6,6 +6,7 @@ backend/.env
 backend/storage/chroma_db/
 backend/storage/docstore/
 backend/storage/feedback.jsonl
+backend/storage/suggested_questions.json
 *.pyc
 
 # Logs

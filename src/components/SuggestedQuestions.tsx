@@ -1,19 +1,19 @@
-import { useLanguage } from "../i18n";
-
 interface SuggestedQuestionsProps {
+  questions: string[];
   onSelect: (question: string) => void;
   disabled?: boolean;
 }
 
 export default function SuggestedQuestions({
+  questions,
   onSelect,
   disabled,
 }: SuggestedQuestionsProps) {
-  const { dictionary } = useLanguage();
+  if (questions.length === 0) return null;
 
   return (
     <div className="flex shrink-0 flex-wrap gap-2 px-4 pb-3 md:px-6">
-      {dictionary.suggestedQuestions.map((question) => (
+      {questions.map((question) => (
         <button
           key={question}
           type="button"

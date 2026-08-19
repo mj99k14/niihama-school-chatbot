@@ -1,11 +1,5 @@
 export type Lang = "ja" | "ko";
 
-export interface ConsultationContent {
-  id: number;
-  name: string;
-  description: string;
-}
-
 export interface Dictionary {
   pageTitle: string;
   header: {
@@ -13,9 +7,6 @@ export interface Dictionary {
     serviceName: string;
     newChatLabel: string;
     clearLabel: string;
-    historyLabel: string;
-    historyModalTitle: string;
-    historyEmpty: string;
     languageAria: string;
     onlineLabel: string;
     offlineLabel: string;
@@ -46,7 +37,6 @@ export interface Dictionary {
     retryLabel: string;
     sendFailedLabel: string;
   };
-  suggestedQuestions: string[];
   sourcePanel: {
     heading: string;
     intro: string;
@@ -64,13 +54,6 @@ export interface Dictionary {
     downloadLabel: string;
     documentLoadError: string;
   };
-  consultation: {
-    cardTitle: string;
-    cardBodyLines: string[];
-    buttonLabel: string;
-    modalTitle: string;
-  };
-  consultations: ConsultationContent[];
   footer: string[];
   modal: {
     closeAria: string;

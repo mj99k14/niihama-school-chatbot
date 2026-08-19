@@ -7,11 +7,9 @@ import {
   FileText,
   BookMarked,
 } from "lucide-react";
-import ConsultationCard from "./ConsultationCard";
 import SourceCard from "./SourceCard";
 import FeedbackButtons from "./FeedbackButtons";
 import Modal from "./Modal";
-import { consultationIcons } from "../data/icons";
 import { useLanguage } from "../i18n";
 import { getSourceDetail } from "../api/sources";
 import { buildDocumentDownloadUrl } from "../api/document";
@@ -42,10 +40,9 @@ export default function SourcePanel({
   onFeedback,
 }: SourcePanelProps) {
   const { dictionary } = useLanguage();
-  const { sourcePanel, consultation } = dictionary;
+  const { sourcePanel } = dictionary;
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [showConsultation, setShowConsultation] = useState(false);
   const [sourceModal, setSourceModal] = useState<SourceModalState | null>(null);
 
   const sources = activeMessage?.sources ?? [];
@@ -229,8 +226,6 @@ export default function SourcePanel({
             </div>
           </section>
         )}
-
-        <ConsultationCard onOpen={() => setShowConsultation(true)} />
       </div>
 
       {sourceModal && (
@@ -240,32 +235,6 @@ export default function SourcePanel({
             : sourceModal.error
               ? sourceModal.error
               : sourceModal.detail?.text}
-        </Modal>
-      )}
-
-      {showConsultation && (
-        <Modal title={consultation.modalTitle} onClose={() => setShowConsultation(false)}>
-          <div className="flex flex-col gap-3">
-            {dictionary.consultations.map((contact) => {
-              const Icon = consultationIcons[contact.id];
-              return (
-                <div
-                  key={contact.id}
-                  className="flex items-start gap-3 rounded-2xl border border-line p-3"
-                >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-light text-primary">
-                    <Icon className="h-[18px] w-[18px]" strokeWidth={2.2} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-ink">{contact.name}</p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-subink">
-                      {contact.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </Modal>
       )}
     </aside>
