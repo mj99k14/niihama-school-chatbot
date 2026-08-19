@@ -1,0 +1,15 @@
+[Unit]
+Description=Niihama chatbot backend (FastAPI/uvicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/niihama_chatbot/backend
+EnvironmentFile=/home/ubuntu/niihama_chatbot/backend/.env
+ExecStart=/home/ubuntu/niihama_chatbot/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
