@@ -1,9 +1,9 @@
 import type { Dictionary } from "./types";
 
 export const ko: Dictionary = {
-  pageTitle: "AI 챗봇 상담 | 니이하마 공업고등학교",
+  pageTitle: "AI 챗봇 상담 | 니이하마 공업고등전문학교",
   header: {
-    schoolName: "니이하마 공업고등학교",
+    schoolName: "니이하마 공업고등전문학교",
     serviceName: "AI 챗봇 상담",
     newChatLabel: "새 대화",
     clearLabel: "대화 삭제",
@@ -25,7 +25,7 @@ export const ko: Dictionary = {
   chat: {
     headerName: "교칙 AI 챗봇",
     greeting:
-      "안녕하세요! 😊\n니이하마 공업고등학교 AI 챗봇입니다.\n궁금한 내용을 자유롭게 질문해주세요!",
+      "안녕하세요! 😊\n니이하마 공업고등전문학교 AI 챗봇입니다.\n궁금한 내용을 자유롭게 질문해주세요!",
     placeholder: "질문을 입력해주세요...",
     inputAria: "질문 입력",
     sendAria: "전송",

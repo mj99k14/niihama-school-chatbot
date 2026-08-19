@@ -33,13 +33,13 @@ export default function Avatar({ type, size = "md" }: AvatarProps) {
   if (type === "hero") {
     return (
       <div
-        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-line bg-white shadow-sm ring-4 ring-primary-light/60 md:h-16 md:w-16"
+        className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line bg-white shadow-sm ring-4 ring-primary-light/60 md:h-20 md:w-20"
         aria-hidden="true"
       >
         <img
           src={niihama1}
           alt={dictionary.avatar.heroAlt}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain"
         />
       </div>
     );

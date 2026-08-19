@@ -1,9 +1,9 @@
 import type { Dictionary } from "./types";
 
 export const ja: Dictionary = {
-  pageTitle: "AIチャット相談 | 新居浜工業高等学校",
+  pageTitle: "AIチャット相談 | 新居浜工業高等専門学校",
   header: {
-    schoolName: "新居浜工業高等学校",
+    schoolName: "新居浜工業高等専門学校",
     serviceName: "AIチャット相談",
     newChatLabel: "新しい会話",
     clearLabel: "会話を削除",
@@ -25,7 +25,7 @@ export const ja: Dictionary = {
   chat: {
     headerName: "校則AIチャットボット",
     greeting:
-      "こんにちは！😊\n新居浜工業高等学校のAIチャットボットです。\n気になることを自由に質問してください！",
+      "こんにちは！😊\n新居浜工業高等専門学校のAIチャットボットです。\n気になることを自由に質問してください！",
     placeholder: "質問を入力してください...",
     inputAria: "質問を入力",
     sendAria: "送信",
