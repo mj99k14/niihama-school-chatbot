@@ -1,5 +1,6 @@
-import { Bot } from "lucide-react";
 import { useLanguage } from "../i18n";
+import niihama1 from "../img/niihama1.png";
+import niihama2 from "../img/niihama2.png";
 
 type AvatarType = "ai" | "user" | "hero";
 
@@ -16,7 +17,7 @@ const sizeClasses: Record<NonNullable<AvatarProps["size"]>, string> = {
 
 export default function Avatar({ type, size = "md" }: AvatarProps) {
   const { dictionary } = useLanguage();
-  const base = `flex items-center justify-center rounded-full shrink-0 shadow-sm ${sizeClasses[size]}`;
+  const base = `flex items-center justify-center rounded-full shrink-0 shadow-sm overflow-hidden ${sizeClasses[size]}`;
 
   if (type === "ai") {
     return (
@@ -24,7 +25,7 @@ export default function Avatar({ type, size = "md" }: AvatarProps) {
         className={`${base} bg-gradient-to-br from-[#9B6AD6] to-[#B889E6] text-white`}
         aria-hidden="true"
       >
-        <Bot className="w-1/2 h-1/2" strokeWidth={2.2} />
+        <img src={niihama1} alt="" className="h-full w-full object-cover" />
       </div>
     );
   }
@@ -32,12 +33,14 @@ export default function Avatar({ type, size = "md" }: AvatarProps) {
   if (type === "hero") {
     return (
       <div
-        className={`${base} bg-white border border-line ring-4 ring-primary-light/60`}
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-line bg-white shadow-sm ring-4 ring-primary-light/60 md:h-16 md:w-16"
         aria-hidden="true"
       >
-        <span role="img" aria-label={dictionary.avatar.heroAlt}>
-          🐧
-        </span>
+        <img
+          src={niihama1}
+          alt={dictionary.avatar.heroAlt}
+          className="h-full w-full object-cover"
+        />
       </div>
     );
   }
@@ -47,9 +50,11 @@ export default function Avatar({ type, size = "md" }: AvatarProps) {
       className={`${base} bg-accent-blue border border-accent-blue-dark`}
       aria-hidden="true"
     >
-      <span role="img" aria-label={dictionary.avatar.userAlt}>
-        🐧
-      </span>
+      <img
+        src={niihama2}
+        alt={dictionary.avatar.userAlt}
+        className="h-full w-full object-cover"
+      />
     </div>
   );
 }
