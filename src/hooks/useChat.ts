@@ -45,7 +45,7 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
     abortRef.current?.abort();
     setIsSending(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lang]);
+  }, [lang, category]);
 
   useEffect(() => {
     return () => abortRef.current?.abort();
