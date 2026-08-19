@@ -52,12 +52,24 @@ class ParentStore:
         return list(self._data.items())
 
 
+_vectorstore: Chroma | None = None
+
+
 def get_vectorstore(embeddings=None) -> Chroma:
-    return Chroma(
-        collection_name=COLLECTION_NAME,
-        embedding_function=embeddings or get_embeddings(),
-        persist_directory=settings.chroma_persist_dir,
-    )
+    global _vectorstore
+    if embeddings is not None:
+        return Chroma(
+            collection_name=COLLECTION_NAME,
+            embedding_function=embeddings,
+            persist_directory=settings.chroma_persist_dir,
+        )
+    if _vectorstore is None:
+        _vectorstore = Chroma(
+            collection_name=COLLECTION_NAME,
+            embedding_function=get_embeddings(),
+            persist_directory=settings.chroma_persist_dir,
+        )
+    return _vectorstore
 
 
 def index_chunks(

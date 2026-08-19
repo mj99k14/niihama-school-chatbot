@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { postChat } from "../api/chat";
+import { postChatStream } from "../api/chat";
 import { postFeedback } from "../api/feedback";
 import { ApiError, NetworkError } from "../api/client";
 import type { Dictionary, Lang } from "../i18n/types";
@@ -56,15 +56,31 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
     const controller = new AbortController();
     abortRef.current = controller;
 
+    let accumulated = "";
+    let receivedSources: ChatMessageType["sources"];
+
     try {
-      const res = await postChat(
+      await postChatStream(
         { message: question, category, session_id: null, language: lang },
+        {
+          onSources: (sources) => {
+            receivedSources = sources;
+          },
+          onDelta: (text) => {
+            accumulated += text;
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === pendingId ? { ...m, content: accumulated, status: "streaming" } : m
+              )
+            );
+          },
+        },
         controller.signal
       );
       setMessages((prev) =>
         prev.map((m) =>
           m.id === pendingId
-            ? { ...m, content: res.answer, sources: res.sources, status: "success", feedback: null }
+            ? { ...m, content: accumulated, sources: receivedSources, status: "success", feedback: null }
             : m
         )
       );

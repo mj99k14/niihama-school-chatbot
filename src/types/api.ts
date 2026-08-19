@@ -26,12 +26,6 @@ export interface ChatSource {
   page_end: number;
 }
 
-export interface ChatResponse {
-  answer: string;
-  category_used: string | null;
-  sources: ChatSource[];
-}
-
 export interface SourceDetail {
   parent_id: string;
   category: string;

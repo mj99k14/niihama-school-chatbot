@@ -10,21 +10,6 @@ class ChatRequest(BaseModel):
     language: Literal["ko", "ja"] | None = None
 
 
-class SourceItem(BaseModel):
-    parent_id: str
-    category: str | None = None
-    heading: str
-    text_snippet: str
-    page_start: int
-    page_end: int
-
-
-class ChatResponse(BaseModel):
-    answer: str
-    category_used: str | None = None
-    sources: list[SourceItem]
-
-
 class CategoryItem(BaseModel):
     id: str
     label: str

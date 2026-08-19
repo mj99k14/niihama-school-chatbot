@@ -19,9 +19,15 @@ class E5Embeddings(HuggingFaceEmbeddings):
         return super().embed_query(f"query: {text}")
 
 
+_embeddings: E5Embeddings | None = None
+
+
 def get_embeddings() -> E5Embeddings:
-    return E5Embeddings(
-        model_name=EMBEDDING_MODEL_NAME,
-        model_kwargs={"device": "cpu"},
-        encode_kwargs={"normalize_embeddings": True},
-    )
+    global _embeddings
+    if _embeddings is None:
+        _embeddings = E5Embeddings(
+            model_name=EMBEDDING_MODEL_NAME,
+            model_kwargs={"device": "cpu"},
+            encode_kwargs={"normalize_embeddings": True},
+        )
+    return _embeddings

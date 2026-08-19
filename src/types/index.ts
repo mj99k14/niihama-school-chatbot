@@ -1,7 +1,7 @@
 import type { ChatSource } from "./api";
 
 export type ChatRole = "user" | "assistant";
-export type MessageStatus = "sending" | "success" | "error";
+export type MessageStatus = "sending" | "streaming" | "success" | "error";
 
 export interface ChatMessageType {
   id: string;
