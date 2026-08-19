@@ -32,7 +32,9 @@ function describeError(err: unknown, dictionary: Dictionary): string {
 }
 
 export function useChat(dictionary: Dictionary, lang: Lang, category: string | null) {
-  const [messages, setMessages] = useState<ChatMessageType[]>(() => [
+  // 카테고리별로 대화 기록을 구분해서 보여주기 위해, 실제로는 전체 기록(allMessages)을
+  // 다 들고 있다가 현재 선택된 카테고리에 맞는 것만 걸러서(visibleMessages) 내보낸다.
+  const [allMessages, setAllMessages] = useState<ChatMessageType[]>(() => [
     createGreeting(dictionary.chat.greeting),
   ]);
   const [isSending, setIsSending] = useState(false);
@@ -40,16 +42,27 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    setMessages([createGreeting(dictionary.chat.greeting)]);
+    setAllMessages([createGreeting(dictionary.chat.greeting)]);
     setActiveMessageId(null);
     abortRef.current?.abort();
     setIsSending(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lang, category]);
+  }, [lang]);
+
+  useEffect(() => {
+    setActiveMessageId(null);
+    abortRef.current?.abort();
+    setIsSending(false);
+  }, [category]);
 
   useEffect(() => {
     return () => abortRef.current?.abort();
   }, []);
+
+  const messages = useMemo(() => {
+    if (category === null) return allMessages;
+    return allMessages.filter((m) => m.category === undefined || m.category === category);
+  }, [allMessages, category]);
 
   const runChatRequest = async (pendingId: string, question: string) => {
     abortRef.current?.abort();
@@ -68,7 +81,7 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
           },
           onDelta: (text) => {
             accumulated += text;
-            setMessages((prev) =>
+            setAllMessages((prev) =>
               prev.map((m) =>
                 m.id === pendingId ? { ...m, content: accumulated, status: "streaming" } : m
               )
@@ -77,7 +90,7 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
         },
         controller.signal
       );
-      setMessages((prev) =>
+      setAllMessages((prev) =>
         prev.map((m) =>
           m.id === pendingId
             ? { ...m, content: accumulated, sources: receivedSources, status: "success", feedback: null }
@@ -87,7 +100,7 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
       setActiveMessageId(pendingId);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
-      setMessages((prev) =>
+      setAllMessages((prev) =>
         prev.map((m) =>
           m.id === pendingId
             ? { ...m, content: describeError(err, dictionary), status: "error" }
@@ -109,6 +122,7 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
       role: "user",
       content: trimmed,
       createdAt: new Date(),
+      category,
     };
     const pendingId = createId();
     const pendingMessage: ChatMessageType = {
@@ -118,19 +132,20 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
       question: trimmed,
       createdAt: new Date(),
       status: "sending",
+      category,
     };
 
-    setMessages((prev) => [...prev, userMessage, pendingMessage]);
+    setAllMessages((prev) => [...prev, userMessage, pendingMessage]);
     setIsSending(true);
 
     void runChatRequest(pendingId, trimmed);
   };
 
   const retryMessage = (messageId: string) => {
-    const target = messages.find((m) => m.id === messageId);
+    const target = allMessages.find((m) => m.id === messageId);
     if (!target || !target.question || isSending) return;
 
-    setMessages((prev) =>
+    setAllMessages((prev) =>
       prev.map((m) => (m.id === messageId ? { ...m, status: "sending", content: "" } : m))
     );
     setIsSending(true);
@@ -138,7 +153,7 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
   };
 
   const submitFeedback = async (messageId: string, helpful: boolean): Promise<boolean> => {
-    const target = messages.find((m) => m.id === messageId);
+    const target = allMessages.find((m) => m.id === messageId);
     if (!target || target.feedback) return false;
 
     try {
@@ -148,7 +163,7 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
         answer: target.content,
         helpful,
       });
-      setMessages((prev) =>
+      setAllMessages((prev) =>
         prev.map((m) =>
           m.id === messageId ? { ...m, feedback: helpful ? "helpful" : "not_helpful" } : m
         )
@@ -161,21 +176,21 @@ export function useChat(dictionary: Dictionary, lang: Lang, category: string | n
 
   const resetChat = () => {
     abortRef.current?.abort();
-    setMessages([createGreeting(dictionary.chat.greeting)]);
+    setAllMessages([createGreeting(dictionary.chat.greeting)]);
     setActiveMessageId(null);
     setIsSending(false);
   };
 
   const clearChat = () => {
     abortRef.current?.abort();
-    setMessages([]);
+    setAllMessages([]);
     setActiveMessageId(null);
     setIsSending(false);
   };
 
   const activeMessage = useMemo(
-    () => messages.find((m) => m.id === activeMessageId) ?? null,
-    [messages, activeMessageId]
+    () => allMessages.find((m) => m.id === activeMessageId) ?? null,
+    [allMessages, activeMessageId]
   );
 
   return {
